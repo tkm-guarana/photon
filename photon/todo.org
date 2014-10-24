@@ -1,0 +1,5 @@
+
+* TODO トレーサーを作成する
+  とりあえず描画
+* TODO BLASで行列演算を行なう
+  CUDA or Eigen
