@@ -5,6 +5,7 @@
 #include <set>
 #include <memory>
 #include <iostream>
+#include <mutex>
 
 #include <SDL2/SDL.h>
 

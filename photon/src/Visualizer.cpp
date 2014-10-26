@@ -3,6 +3,7 @@
 #include <set>
 #include <memory>
 #include <iostream>
+#include <mutex>
 
 #include <SDL2/SDL.h>
 
@@ -34,25 +35,15 @@ void Visualizer::RenderPoints(std::vector<Photon> photons, Canvas &canvas)
 	Matrix4 s;
 	Matrix4Screen(s, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
-	w.transpose();
-	v.transpose();
-	p.transpose();
-	s.transpose();
-
 	Vector3 color(1, 1, 1);
 
 	for (auto photon : photons)
 	{
-		Vector4 t;
-		t << photon.position, 1.0f;
-		t = w * t;
-		t = t / t(3);
-		t = v * t;
-		t = t / t(3);
-		t = p * t;
-		t = t / t(3);
-		t = s * t;
-		t = t / t(3);
+		Vector3 t = photon.position;
+		Vector3TransformCoordinate(t, w);
+		Vector3TransformCoordinate(t, v);
+		Vector3TransformCoordinate(t, p);
+		Vector3TransformCoordinate(t, s);
 
 		int x = int(t(0));
 		int y = int(t(1));

@@ -25,6 +25,9 @@ void Matrix4Screen(Matrix4 &mat,
 void Matrix4OrthoBasis(Matrix4 &basis,
 					   const Vector3 &normal);
 
+void Vector3TransformCoordinate(Vector3 &v,
+								Matrix4 &m);
+
 inline float Average(Vector3 &v)
 {
 	return (v(0) + v(1) + v(2)) / 3.0f;

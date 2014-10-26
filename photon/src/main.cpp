@@ -7,10 +7,12 @@
 
 #include <vector>
 #include <set>
+#include <memory>
 #include <algorithm>
 #include <cstdint>
 #include <cmath>
 #include <iostream>
+#include <mutex>
 
 // #include "fw/fw_window.h"
 // #include "fw/fw_matrix.h"
@@ -381,53 +383,6 @@ MainWindow* MainWindow::_inst = 0;
 #endif
 
 
-#if 0
-
-class Canvas
-{
-private:
-	SDL_Renderer *renderer;
-	SDL_Texture *texture;
-	int width;
-	int height;
-public:
-	Canvas(SDL_Renderer *renderer, int width, int height);
-	~Canvas();
-
-	void SetPixelColor(int x, int y);
-};
-
-Canvas::Canvas(SDL_Renderer *_renderer, int _width, int _height) :
-	renderer(_renderer), texture(NULL), width(_width), height(_height)
-{
-	this->texture = SDL_CreateTexture(renderer,
-									  SDL_PIXELFORMAT_RGB24,
-									  SDL_TEXTUREACCESS_STREAMING,
-									  this->width, this->height);
-}
-
-Canvas::~Canvas()
-{
-	if (this->texture)
-		SDL_DestroyTexture(this->texture);
-}
-
-void Canvas::SetPixelColor(int x, int y)
-{
-	uint8_t *pixels = NULL;
-	int pitch = 0;
-	SDL_LockTexture(this->texture, NULL, (void **)&pixels, &pitch);	
-
-	uint8_t *p = pixels + pitch * y + x;
-	p[0] = 0;
-	p[1] = 255;
-	p[2] = 0;
-
-	SDL_UnlockTexture(this->texture);
-}
-
-#endif
-
 #define SCREEN_WIDTH	640
 #define SCREEN_HEIGHT	480
 
@@ -450,31 +405,12 @@ int main(int argc, char *argv[])
 											 SDL_TEXTUREACCESS_STREAMING,
 											 SCREEN_WIDTH,
 											 SCREEN_HEIGHT);
-	uint8_t *pixels = NULL;
-	int pitch = 0;
-
 
 	auto canvas = CreateSDLCanvas(texture);
-
-	// SDL_LockTexture(texture, NULL, (void **)&pixels, &pitch);
-	
-	printf("locking succeeded. pitch = %d\n", pitch);
-	
 	Vector3 white(0, 0, 0);
 	for (int i = 0; i < SCREEN_HEIGHT; i++)
-	{
-		// uint8_t *p = pixels + pitch * i;
 		for (int j = 0; j < SCREEN_WIDTH; j++)
-		{
-			// p[j*4+0] = 255;
-			// p[j*4+1] = 255;
-			// p[j*4+2] = i % 255;
-			// p[j*4+3] = j % 255;
 			canvas->SetColor(j, i, white);
-		}
-	}
-
-	// SDL_UnlockTexture(texture);
 
 	Scene scene;
 
@@ -482,19 +418,25 @@ int main(int argc, char *argv[])
 	c << -1.5f, 1.0f, 1.5f;
 	auto sphere = CreateSphere(c, 2.0f);
 
-	DimensionalTree tree;
 	Vector3 pl;
-	// pl << 2.0f, 1.0f, 0.0f;
-	// auto light = CreatePointLight(pl);
-
 	pl << 0.0f, 6.0f, 1.0f;
 
 	scene.lights.push_back(CreateSquareLight(pl, 2.0f, 2.0f));
 	scene.objects.push_back(CreateSphere(Vector3(-1.5f, 1.0f, 1.5f), 0.8f));
 	scene.objects.push_back(CreateSphere(Vector3(-1.0f, 0.6f, -2.0f), 0.3f));
 	// scene.objects.push_back(CreateTriangle(Vector3(-3.0f, 0.0f,  3.0f),
-	// 									   Vector3(-3.0f, 0.0f, -6.5f),
+	// 									   Vector3(-3.0f, 0.0f, -6.0f),
 	// 									   Vector3( 3.0f, 0.0f,  3.0f)));
+	// scene.objects.push_back(CreateTriangle(Vector3(-3.0f, 0.0f,  3.0f),
+	// 									   Vector3(-3.0f, 0.0f, -6.0f),
+	// 									   Vector3( 3.0f, 0.0f, -6.0f)));
+	// scene.objects.push_back(CreateTriangle(Vector3(-3.0f, 6.0f, -6.0f),
+	// 									   Vector3(3.0f, 0.0f, -6.0f),
+	// 									   Vector3(-3.0f, 0.0f, -6.0f)));
+	// scene.objects.push_back(CreateTriangle(Vector3(-3.0f, 6.0f, -6.0f),
+	// 									   Vector3(3.0f, 6.0f, -6.0f),
+	// 									   Vector3(3.0f, 0.0f, -6.0f)));
+
 	// scene.objects.push_back(CreateTriangle(Vector3(-3.0f, 6.0f, -6.0f),
 	// 									   Vector3( 3.0f, 6.0f, -6.0f),
 	// 									   Vector3( 3.0f, 0.0f, -6.0f)));
@@ -502,6 +444,8 @@ int main(int argc, char *argv[])
 	scene.Emitte(100000, 3);
 
 	std::cout << "emitting photon was finished" << std::endl;
+
+	Visualizer visualizer;
 
 	Vector3 eye;
 	Vector3 look;
@@ -511,14 +455,18 @@ int main(int argc, char *argv[])
 	Matrix4 screen;
 
 	// ƒJƒƒ‰À•WŒn
-	eye << 0.0f, 0.0f, -5.0f;
-	look << 0.0f, 0.0f, 0.0f;
+	eye << 0.0f, 1.0f, -10.0f;
+	look << 0.0f, 1.0f, 0.0f;
 	up << 0.0f, 1.0f, 0.0f;
 	Matrix4ViewL(view, eye, look, up); // ok
 
 	Matrix4PerspectiveL(projection, 60.0f * 3.1415f / 180.0f,
 						(float)(SCREEN_WIDTH) / (float)(SCREEN_HEIGHT),
 						1.0f, 100.0f);
+
+	visualizer.world = Matrix4::Identity();
+	visualizer.view = view;
+	visualizer.projection = projection;
 
 	Matrix4Screen(screen, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -545,15 +493,14 @@ int main(int argc, char *argv[])
 	// std::cout << s2 << std::endl;
 	Vector3 origin;
 	origin << s2(0), s2(1), s2(2);
+	// origin << source(0), source(1), source(2);
 	// std::cout << origin << std::endl;
 
 	Intersection is;
 
-#if 0
+#if 1
 	for (int y = 0; y < SCREEN_HEIGHT; y++)
 	{
-		uint8_t *p = pixels + pitch * y;
-
 		for (int x = 0; x < SCREEN_WIDTH; x++)
 		{
 			Vector4 destination;
@@ -576,12 +523,6 @@ int main(int argc, char *argv[])
 		}
 	}
 #else
-	Visualizer visualizer;
-
-	visualizer.world = Matrix4::Identity();
-	visualizer.view = view;
-	visualizer.projection = projection;
-
 	visualizer.RenderPoints(scene.tree.points, *canvas);
 #endif
 

@@ -3,6 +3,7 @@
 #include <set>
 #include <memory>
 #include <iostream>
+#include <mutex>
 
 #include "Eigen/Core"
 #include "Eigen/LU"
@@ -61,26 +62,8 @@ void Scene::Emitte(int quantity,			// フォトンの量
 					this->tree.Add(p);
 					// std::cout << p.position << std::endl;
 				}
-			}
-			else
-			{
-				break;
-			}
-#if 0
-			if (index > 0)
-			{
-				byte res = objects[n]->photon(photon);
-				if (res & pm::Absorption) // 吸収
-				{
-					this.tree->add(photon);
-				}
-				else
-				{
-					if (r == 6)
-						this.tree->add(photon);
-				}
 
-				if (!(res & (pm::Reflection | pm::Refraction))) // 反射、屈折しない
+				if (p.behavior != PhotonBehavior::SpecularReflection)
 				{
 					break;
 				}
@@ -89,7 +72,6 @@ void Scene::Emitte(int quantity,			// フォトンの量
 			{
 				break;
 			}
-#endif
 		}
 	}
 

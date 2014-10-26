@@ -34,7 +34,8 @@ public:
 Sphere::Sphere(const Vector3 &_center, float _radious) :
 	center(_center), radious(_radious)
 {
-	material.diffuse << 1.0f, 0.0f, 0.0f;
+	material.diffuse << 0.5f, 0.0f, 0.5f;
+	// material.specular << 0.0f, 0.5f, 0.0f;
 }
 
 bool Sphere::Collide(const Vector3 &origin, const Vector3 &direction, Intersection &is)
@@ -86,8 +87,8 @@ void Sphere::Behave(Photon &photon)
 		photon.position += photon.direction * is.distance;
 
 		float diffuseReflectance = Average(this->material.diffuse);
-		float specularReflectance = Average(this->material.specular);
-		float refractiveIndex = Average(this->material.refraction);
+		float specularReflectance = Average(this->material.specular) + diffuseReflectance;
+		float refractiveIndex = Average(this->material.refraction) + specularReflectance;
 
 		float p = Random::Value();
 		if (p <= diffuseReflectance) // Diffuse Reflection
@@ -104,6 +105,15 @@ void Sphere::Behave(Photon &photon)
 
 			photon.spectrum = this->material.diffuse;
 			photon.behavior = PhotonBehavior::DiffuseReflection;
+		}
+		else if (p <= specularReflectance)
+		{
+			Vector3 normal = photon.position - this->center;
+			normal.normalize();
+			photon.direction -= normal * normal.dot(photon.direction) * 2;
+
+			photon.spectrum = this->material.specular;
+			photon.behavior = PhotonBehavior::SpecularReflection;
 		}
 		else // Absorption
 		{
@@ -156,7 +166,7 @@ byte Sphere::photon(Photon &photon)
 		fw::Vector3Normalize(&photon.direction);
 
 		// 法線の基底に変換
-		fw::Vector3 normal = photon.position - position;
+		fw::Vector3 normal = photon.position - this->center;
 		fw::Vector3Normalize(&normal);
 		fw::Matrix4 basis;
 		pm::ortho_basis(&basis, &normal);
@@ -293,6 +303,7 @@ void Triangle::Behave(Photon &photon)
 	Intersection is;
 	if (this->Collide(photon.position, photon.direction, is))
 	{	
+		
 		float diffuseReflectance = Average(this->material.diffuse);
 		float specularReflectance = Average(this->material.specular);
 
@@ -326,6 +337,12 @@ void Triangle::Behave(Photon &photon)
 
 			photon.spectrum = this->material.diffuse;
 			photon.behavior = PhotonBehavior::DiffuseReflection;
+		}
+		else
+		{	// 吸収
+			photon.incidence = photon.direction.reverse();
+			photon.spectrum = this->material.diffuse;
+			photon.behavior = PhotonBehavior::Absorption;
 		}
 	}
 }

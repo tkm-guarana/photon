@@ -107,3 +107,16 @@ void Matrix4OrthoBasis(Matrix4 &basis,
 		ax(2), ay(2), az(2), 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f;
 }
+
+void Vector3TransformCoordinate(Vector3 &v, Matrix4 &m)
+{
+	float x, y, z, w;
+	x = v(0) * m(0,0) + v(1) * m(1,0) + v(2) * m(2,0) + m(3,0); // w = 1とする
+	y = v(0) * m(0,1) + v(1) * m(1,1) + v(2) * m(2,1) + m(3,1);
+	z = v(0) * m(0,2) + v(1) * m(1,2) + v(2) * m(2,2) + m(3,2);
+	w = v(0) * m(0,3) + v(1) * m(1,3) + v(2) * m(2,3) + m(3,3);
+	v <<
+		x / w,
+		y / w,
+		z / w;
+}
