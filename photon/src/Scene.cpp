@@ -31,6 +31,8 @@ void Scene::Emitte(int quantity,			// フォトンの量
 	// 暫定、本来は放出フォトン数を光源の数で割り、均等に配置する
 	auto &light = this->lights[0];
 
+	std::cout << "object size: " << objects.size() << std::endl;
+
 	for (int j = 0; j < quantity; j++)
 	{
 		light->Emitte(p);
@@ -38,14 +40,13 @@ void Scene::Emitte(int quantity,			// フォトンの量
 
 		for (int r = 0; r < reflection_limit; r++)
 		{
-			float distance = -1;
+			float distance = 100000000;
 			int index = -1;
 			for (size_t i = 0; i < objects.size(); i++)
 			{
 				if (objects[i]->Collide(p.position, p.direction, is))
 				{
-					// std::cout << j << " : " << p.position << std::endl;
-					if (is.distance > distance)
+					if (is.distance < distance)
 					{
 						distance = is.distance;
 						index = i;
@@ -60,10 +61,10 @@ void Scene::Emitte(int quantity,			// フォトンの量
 				{
 					// KDimensionalTreeに追加
 					this->tree.Add(p);
-					// std::cout << p.position << std::endl;
+					absorption = true;
 				}
-
-				if (p.behavior != PhotonBehavior::SpecularReflection)
+				else if (p.behavior != PhotonBehavior::DiffuseReflection &&
+						 p.behavior != PhotonBehavior::SpecularReflection)
 				{
 					break;
 				}
@@ -73,6 +74,9 @@ void Scene::Emitte(int quantity,			// フォトンの量
 				break;
 			}
 		}
+
+		if (!absorption)
+			this->tree.Add(p);
 	}
 
 	this->tree.Build2();
@@ -121,6 +125,7 @@ bool Scene::Trace(Vector3 &base,
 	// Diffuse Reflection
 	if (diffuse > 0.0f && distance > 0)
 	{
+		// std::cout << "diffuse" << std::endl;
 		Vector3 intersection = base + direction * distance;
 		Vector3 normal = objects[n]->GetNormalVector(intersection);
 		// Radiance Estimation
@@ -129,6 +134,8 @@ bool Scene::Trace(Vector3 &base,
 									  500,
 									  normal);
 	}
+	else
+		std::cout << "oops" << std::endl;
 
 	rgb = diffuse_color;
 

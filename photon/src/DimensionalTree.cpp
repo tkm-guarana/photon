@@ -79,7 +79,7 @@ void DimensionalTree::RunThread()
 
 	for (auto &que : this->thread_que)
 	{
-		std::cout << "raise thread, depth: " << que.depth << std::endl;
+		// std::cout << "raise thread, depth: " << que.depth << std::endl;
 		threads.push_back(std::thread(&DimensionalTree::BuildWorker, this, std::ref(que.vars), std::ref(ques), que.depth));
 	}
 	// スレッド終了待ち

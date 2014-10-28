@@ -1,4 +1,3 @@
-
 #include <cfloat>
 
 #include <iostream>
@@ -34,7 +33,7 @@ public:
 Sphere::Sphere(const Vector3 &_center, float _radious) :
 	center(_center), radious(_radious)
 {
-	material.diffuse << 0.5f, 0.0f, 0.5f;
+	material.diffuse << 1.0f, 0.0f, 0.0f;
 	// material.specular << 0.0f, 0.5f, 0.0f;
 }
 
@@ -103,18 +102,22 @@ void Sphere::Behave(Photon &photon)
 				sin(theta) * sin(phai);
 			photon.direction.normalize();
 
+			Matrix4 basis;
+			Vector3 n = this->GetNormalVector(photon.position);
+			Matrix4OrthoBasis(basis, n);
+			Vector3TransformCoordinate(photon.direction, basis);
+
 			photon.spectrum = this->material.diffuse;
 			photon.behavior = PhotonBehavior::DiffuseReflection;
 		}
-		else if (p <= specularReflectance)
-		{
-			Vector3 normal = photon.position - this->center;
-			normal.normalize();
-			photon.direction -= normal * normal.dot(photon.direction) * 2;
+		// else if (p <= specularReflectance)
+		// {
+		// 	Vector3 n = this->GetNormalVector(photon.position);
+		// 	photon.direction -= n * n.dot(photon.direction) * 2;
 
-			photon.spectrum = this->material.specular;
-			photon.behavior = PhotonBehavior::SpecularReflection;
-		}
+		// 	photon.spectrum = this->material.specular;
+		// 	photon.behavior = PhotonBehavior::SpecularReflection;
+		// }
 		else // Absorption
 		{
 			photon.incidence = photon.direction.reverse();
@@ -130,100 +133,6 @@ Vector3 Sphere::GetNormalVector(const Vector3 &point)
 	dif.normalize();
 	return dif;
 }
-
-#if 0
-byte Sphere::photon(Photon &photon)
-{
-	float t = collide(&position, radious, &photon.position, &photon.direction);
-	if (t < 0)
-	{
-		return NoCollision; // 交差しない
-	}
-	// 材質により反射、透過、吸収のいずれかを選択
-	// 反射ならば以下のコードを実行する
-
-	photon.position += photon.direction * t; // 移動する
-
-	// 平均拡散反射率
-	float diffuse_reflectance = average(material_info->diffuse);//(diffuse.x + diffuse.y + diffuse.z) / 3.0f;
-	// 平均鏡面反射率
-	float specular_reflectance = average(material_info->specular);
-	// 屈折率
-	float refractive_index = average(material_info->refraction);
-
-	byte result = 0;
-	float p = random();
-	if(p <= diffuse_reflectance)
-	{	// 拡散反射
-		photon.incidence = photon.direction * -1; // 入射方向を保存
-
-		// 無造作に反射方向を選ぶ
-		float theta = acos(sqrt(random()));
-		float phai = 2.0f * 3.1415f * random();
-		photon.direction.x = sin(theta)*cos(phai);
-		photon.direction.y = cos(theta);
-		photon.direction.z = sin(theta)*sin(phai);
-		fw::Vector3Normalize(&photon.direction);
-
-		// 法線の基底に変換
-		fw::Vector3 normal = photon.position - this->center;
-		fw::Vector3Normalize(&normal);
-		fw::Matrix4 basis;
-		pm::ortho_basis(&basis, &normal);
-		fw::Vector3TransformCoordinate(&photon.direction, &basis);
-
-		photon.spectrum.x = material_info->diffuse.x;
-		photon.spectrum.y = material_info->diffuse.y;
-		photon.spectrum.z = material_info->diffuse.z;
-		
-		result = DiffuseReflect;
-	}
-	else if(diffuse_reflectance < p && p < diffuse_reflectance + specular_reflectance)
-	{	// 鏡面反射
-		fw::Vector3 normal = photon.position - position;
-		fw::Vector3Normalize(&normal);
-		photon.direction -= normal * fw::Vector3Dot(&normal, &photon.direction) * 2; // 反射方向を計算
-
-		photon.spectrum.x = material_info->specular.x;
-		photon.spectrum.y = material_info->specular.y;
-		photon.spectrum.z = material_info->specular.z;
-
-		result = SpecularReflect;
-	}
-	else if(diffuse_reflectance + specular_reflectance < p && p < diffuse_reflectance + specular_reflectance + refractive_index)
-	{	// 屈折
-		fw::Vector3 normal = photon.position - position;
-		fw::Vector3Normalize(&normal);
-		fw::Vector3 refract_in = photon.direction * -1;
-		pm::refract(&photon.direction, &refract_in, &normal, 1.0f, 2.0f); //refractive_index);
-		photon.position += normal * -0.0000001f; // 少しずらす
-
-		float tt = collide(&position, radious, &photon.position, &photon.direction);
-		photon.position += photon.direction * tt; // 球体内移動
-
-		refract_in = photon.direction * -1;
-//		refract(&photon.direction, &refract_in, &normal, refractive_index, 1.0f); // 外へ
-		pm::refract(&photon.direction, &refract_in, &normal, 2.0f, 1.0f); // 外へ
-
-		photon.position += normal * 0.0000001f; // 少しずらす
-
-		result = Refraction;
-	}
-	else
-	{	// 吸収
-		photon.incidence = photon.direction * -1; // 後でunary oeperator作れ
-
-		// material_info->diffuseの色で良いんだろうか？
-		photon.spectrum.x = material_info->diffuse.x;
-		photon.spectrum.y = material_info->diffuse.y;
-		photon.spectrum.z = material_info->diffuse.z;
-
-		result = Absorption;
-	}
-	
-	return result;
-}
-#endif
 
 std::unique_ptr<SceneObject> CreateSphere(const Vector3 &center, float radious)
 {
@@ -250,12 +159,12 @@ public:
 Triangle::Triangle(const Vector3 &_v0, const Vector3 &_v1, const Vector3 &_v2) :
 	v0(_v0), v1(_v1), v2(_v2)
 {
-	material.diffuse << 0.0f, 1.0f, 0.0f;
+	material.diffuse << 1.0f, 1.0f, 1.0f;
 }
 
 bool Triangle::Collide(const Vector3 &origin, const Vector3 &direction, Intersection &is)
 {
-	Vector3 line0 = v2 - v1;
+	Vector3 line0 = v2 - v0;
 	Vector3 line1 = v1 - v0;
 	Vector3 normal = line0.cross(line1);
 	normal.normalize();
@@ -303,9 +212,11 @@ void Triangle::Behave(Photon &photon)
 	Intersection is;
 	if (this->Collide(photon.position, photon.direction, is))
 	{	
+		photon.position += photon.direction * is.distance;
 		
 		float diffuseReflectance = Average(this->material.diffuse);
-		float specularReflectance = Average(this->material.specular);
+		float specularReflectance = Average(this->material.specular) + diffuseReflectance;
+		float refractiveIndex = Average(this->material.refraction) + specularReflectance;
 
 		float p = Random::Value();
 		if (p <= diffuseReflectance) // Diffuse Reflection
@@ -320,24 +231,22 @@ void Triangle::Behave(Photon &photon)
 				sin(theta) * sin(phai);
 			photon.direction.normalize();
 
-			Vector3 line0 = v2 - v1;
-			Vector3 line1 = v1 - v0;
-			Vector3 n = line0.cross(line1);
-			n.normalize();
-
 			Matrix4 basis;
+			Vector3 n = this->GetNormalVector(photon.position);
 			Matrix4OrthoBasis(basis, n);
-			basis.transpose();
-
-			Vector4 t;
-			t << n(0), n(1), n(2), 1.0f;
-			t = basis * t;
-			t = t / t(3);
-			photon.direction << t(0), t(1), t(2);
+			Vector3TransformCoordinate(photon.direction, basis);
 
 			photon.spectrum = this->material.diffuse;
 			photon.behavior = PhotonBehavior::DiffuseReflection;
 		}
+		// else if (p <= specularReflectance)
+		// {
+		// 	Vector3 n = this->GetNormalVector(photon.position);
+		// 	photon.direction -= n * n.dot(photon.direction) * 2;
+
+		// 	photon.spectrum = this->material.specular;
+		// 	photon.behavior = PhotonBehavior::SpecularReflection;
+		// }
 		else
 		{	// 吸収
 			photon.incidence = photon.direction.reverse();
@@ -349,7 +258,7 @@ void Triangle::Behave(Photon &photon)
 
 Vector3 Triangle::GetNormalVector(const Vector3 &point)
 {
-	Vector3 line0 = v2 - v1;
+	Vector3 line0 = v2 - v0;
 	Vector3 line1 = v1 - v0;
 	Vector3 n = line0.cross(line1);
 	n.normalize();

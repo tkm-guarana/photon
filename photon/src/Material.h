@@ -3,11 +3,15 @@
 #define _MATERIAL_H_
 
 
-struct Material
+class Material
 {
+public:
 	Color diffuse;
 	Color specular;
 	Color refraction;
+
+	/* Material() = default; */
+	/* ~Material() = default; */
 };
 
 

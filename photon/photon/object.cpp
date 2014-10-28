@@ -84,7 +84,6 @@ byte Sphere::photon(Photon &photon)
 		fw::Matrix4 basis;
 		pm::ortho_basis(&basis, &normal);
 		fw::Vector3TransformCoordinate(&photon.direction, &basis);
-
 		
 		photon.spectrum.x = material_info->diffuse.x;
 		photon.spectrum.y = material_info->diffuse.y;

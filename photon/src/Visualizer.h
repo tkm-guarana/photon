@@ -14,6 +14,7 @@ public:
 	Visualizer() = default;
 	~Visualizer() = default;
 
+	void Render(Canvas &canvas, Scene &scene);
 	void RenderPoints(std::vector<Photon> photons, Canvas &canvas);
 };
 

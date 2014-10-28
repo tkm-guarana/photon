@@ -15,7 +15,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "39"
             endingLineNumber = "39"
-            landmarkName = "Sphere::Collide(const Vector3 &amp;origin, const Vector3 &amp;direction, Intersection &amp;is)"
+            landmarkName = "Sphere::Sphere(const Vector3 &amp;_center, float _radious)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -58,22 +58,6 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "photon/src/Scene.cpp"
-            timestampString = "435056525.535918"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "Scene::Emitte(int quantity, // &#x30d5;&#x30a9;&#x30c8;&#x30f3;&#x306e;&#x91cf; int reflection_limit)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "photon/src/Scene.cpp"
             timestampString = "435649047.013709"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
@@ -94,9 +78,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "540"
-            endingLineNumber = "540"
-            landmarkName = "main(int argc, char *argv[])"
-            landmarkType = "7">
+            endingLineNumber = "540">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -128,6 +110,86 @@
             startingLineNumber = "127"
             endingLineNumber = "127"
             landmarkName = "DimensionalTree::size()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "photon/src/Scene.cpp"
+            timestampString = "436097193.130488"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
+            landmarkName = "Scene::Emitte(int quantity, // &#x30d5;&#x30a9;&#x30c8;&#x30f3;&#x306e;&#x91cf; int reflection_limit)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "photon/src/Scene.cpp"
+            timestampString = "436097524.636574"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "Scene::Emitte(int quantity, // &#x30d5;&#x30a9;&#x30c8;&#x30f3;&#x306e;&#x91cf; int reflection_limit)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "photon/src/Scene.cpp"
+            timestampString = "436097765.88099"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "124"
+            endingLineNumber = "124"
+            landmarkName = "Scene::Trace(Vector3 &amp;base, Vector3 &amp;direction, Vector3 &amp;rgb, uint32_t depth)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "photon/src/Visualizer.cpp"
+            timestampString = "436184066.880775"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "Visualizer::RenderPoints(std::vector&lt;Photon&gt; photons, Canvas &amp;canvas)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "photon/src/Visualizer.cpp"
+            timestampString = "436187761.316899"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
+            landmarkName = "Visualizer::Render(Canvas &amp;canvas, Scene &amp;scene)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

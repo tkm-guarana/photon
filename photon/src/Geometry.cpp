@@ -30,11 +30,14 @@ void Matrix4ViewL(Matrix4 &mat,
 	float dy = -eye.dot(ay);
 	float dz = -eye.dot(az);
 
-	mat <<
+	Matrix4 mm;
+	mm <<
 		ax(0), ay(0), az(0), 0,
 		ax(1), ay(1), az(1), 0,
 		ax(2), ay(2), az(2), 0,
 		dx, dy, dz, 1;
+
+	mat = mm.transpose();
 }
 
 // パースペクティブ プロジェクション行列作成
@@ -48,11 +51,14 @@ void Matrix4PerspectiveL(Matrix4 &mat,
 	float z2 = -z1 * znear;
 	float tf = tanf(fov);
 	float tfa = tf / aspect;
-	mat <<
+	Matrix4 mm;
+	mm <<
 		tfa,  0,  0, 0,
 		0,   tf,  0, 0,
 		0,    0, z1, 1,
 		0,    0, z2, 0;
+
+	mat = mm.transpose();
 }
 
 // スクリーン行列作成
@@ -62,12 +68,16 @@ void Matrix4Screen(Matrix4 &mat,
 {
 	float hw = width / 2.0f;
 	float hh = height / 2.0f;
+	Matrix4 mm;
 
-	mat <<
+	mm <<
 		hw,  0, 0, 0,
 		 0,-hh, 0, 0,
 		 0,  0, 1, 0,
 		hw, hh, 0, 1;
+
+	
+	mat = mm.transpose();
 }
 
 // 法線を軸とした基底の変換

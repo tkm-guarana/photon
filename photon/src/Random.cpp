@@ -11,7 +11,7 @@ Random& Random::GetInstance()
 
 float Random::Value()
 {
-	static std::uniform_real_distribution<> urd(0, 1);	
+	static std::uniform_real_distribution<> urd(0, 1);
 	Random &random = Random::GetInstance();
 	return urd(random.random);
 }

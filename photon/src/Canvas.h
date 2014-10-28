@@ -8,7 +8,7 @@ class Canvas
 {
 private:
 	virtual void SetColorRec(int x, int y, Vector3 color) = 0;
-
+	
 public:
 	Canvas() = default;
 	virtual ~Canvas() = default;
@@ -18,6 +18,9 @@ public:
 	{
 		SetColorRec(x, y, color);
 	}
+
+	virtual Matrix4 GetScreenMatrix() = 0;
+	virtual Size GetScreenSize() = 0;
 };
 
 

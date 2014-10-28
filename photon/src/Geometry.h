@@ -7,6 +7,10 @@ typedef Eigen::Matrix<float, 3, 1> Vector3;
 typedef Eigen::Matrix<float, 4, 1> Vector4;
 typedef Eigen::Matrix<float, 4, 4> Matrix4;
 
+typedef Eigen::Transform<float, 3, Eigen::Affine> Transform3;
+
+typedef Eigen::Matrix<int, 2, 1> Size;
+
 void Matrix4ViewL(Matrix4 &mat,
 				  const Vector3 &eye,
 				  const Vector3 &look,
