@@ -173,7 +173,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "78"
             endingLineNumber = "78"
-            landmarkName = "Visualizer::RenderPoints(std::vector&lt;Photon&gt; photons, Canvas &amp;canvas)"
+            landmarkName = "Visualizer::Render()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -189,7 +189,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "48"
             endingLineNumber = "48"
-            landmarkName = "Visualizer::Render(Canvas &amp;canvas, Scene &amp;scene)"
+            landmarkName = "Visualizer::Render()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

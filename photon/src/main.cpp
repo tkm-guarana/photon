@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 
 	std::cout << "emitting photon was finished" << std::endl;
 
-	Visualizer visualizer;
+	Visualizer visualizer(*canvas, scene);
 
 	Vector3 eye;
 	Vector3 look;
@@ -110,9 +110,9 @@ int main(int argc, char *argv[])
 	visualizer.projection = projection;
 
 #if 1
-	visualizer.Render(*canvas, scene);
+	visualizer.Render();
 #else
-	visualizer.RenderPoints(scene.tree.points, *canvas);
+	visualizer.RenderPoints();
 #endif
 
 	canvas = nullptr;

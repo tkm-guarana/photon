@@ -95,33 +95,6 @@ void DimensionalTree::RunThread()
 	}
 }
 
-#if 0
-void DimensionalTree::Sort(Axis axis)
-{
-	switch(axis)
-	{
-	case Axis::X:
-		std::sort(points.begin(), points.end(), photon_pred<Vector3LessX>());
-		break;
-	case Axis::Y:
-		std::sort(points.begin(), points.end(), photon_pred<Vector3LessY>());
-		break;
-	case Axis::Z:
-		std::sort(points.begin(), points.end(), photon_pred<Vector3LessZ>());
-		break;
-	}
-}
-#endif
-
-uint32_t DimensionalTree::find_range(Vector3 coord, float distance, uint32_t max_heap)
-{
-	find_center = coord;
-	find_sq_dist = distance*distance;
-	find_result.clear();
-
-	return 0;//FindRec(root_index, 0);
-}
-
 uint32_t DimensionalTree::size()
 {
 	return (uint32_t)points.size();
@@ -157,7 +130,7 @@ Vector3 DimensionalTree::Radiance(const Vector3 &coord,
 	float sr = 1.0f;
 	if(max < max_heap) // 要求した数に満たない
 	{
-		sr = distance*distance;
+		sr = distance * distance;
 	}
 	else
 	{
@@ -287,6 +260,7 @@ uint32_t DimensionalTree::FindRec(HeapList &list,	// 最近傍フォトン格納
 								  uint32_t max,		// 最大収集数
 								  uint32_t depth)	// 再帰の深さ
 {
+	// ノードの終端なら終了
 	if (node == endn)
 		return 0; // invalid call
 
@@ -310,6 +284,7 @@ uint32_t DimensionalTree::FindRec(HeapList &list,	// 最近傍フォトン格納
 	else // other side
 	{
 		FindRec(list, nodes[node].second, center, dist, max, depth + 1);
+
 		if (d*d < dist)
 		{
 			FindRec(list, nodes[node].first, center, dist, max, depth + 1);

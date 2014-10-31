@@ -34,7 +34,6 @@ Sphere::Sphere(const Vector3 &_center, float _radious) :
 	center(_center), radious(_radious)
 {
 	material.diffuse << 1.0f, 0.0f, 0.0f;
-	// material.specular << 0.0f, 0.5f, 0.0f;
 }
 
 bool Sphere::Collide(const Vector3 &origin, const Vector3 &direction, Intersection &is)
@@ -92,6 +91,7 @@ void Sphere::Behave(Photon &photon)
 		float p = Random::Value();
 		if (p <= diffuseReflectance) // Diffuse Reflection
 		{
+			// Diffuse 拡散反射
 			photon.incidence = photon.direction.reverse();
 
 			float theta = acos(sqrt(Random::Value()));
@@ -110,14 +110,21 @@ void Sphere::Behave(Photon &photon)
 			photon.spectrum = this->material.diffuse;
 			photon.behavior = PhotonBehavior::DiffuseReflection;
 		}
-		// else if (p <= specularReflectance)
-		// {
-		// 	Vector3 n = this->GetNormalVector(photon.position);
-		// 	photon.direction -= n * n.dot(photon.direction) * 2;
+		else if (p <= specularReflectance)
+		{
+			// Specular 鏡面反射
+			Vector3 n = this->GetNormalVector(photon.position);
+			photon.direction -= n * n.dot(photon.direction) * 2;
 
-		// 	photon.spectrum = this->material.specular;
-		// 	photon.behavior = PhotonBehavior::SpecularReflection;
-		// }
+			photon.spectrum = this->material.specular;
+			photon.behavior = PhotonBehavior::SpecularReflection;
+		}
+		else if (p <= refractiveIndex)
+		{
+			// Refractive 屈折
+			Vector3 n = this->GetNormalVector(photon.position);
+			Vector3 refract_in = photon.direction.reverse();
+		}
 		else // Absorption
 		{
 			photon.incidence = photon.direction.reverse();
@@ -221,6 +228,7 @@ void Triangle::Behave(Photon &photon)
 		float p = Random::Value();
 		if (p <= diffuseReflectance) // Diffuse Reflection
 		{
+			// Diffuse 拡散反射
 			photon.incidence = photon.direction.reverse();
 
 			float theta = acos(sqrt(Random::Value()));
@@ -239,14 +247,15 @@ void Triangle::Behave(Photon &photon)
 			photon.spectrum = this->material.diffuse;
 			photon.behavior = PhotonBehavior::DiffuseReflection;
 		}
-		// else if (p <= specularReflectance)
-		// {
-		// 	Vector3 n = this->GetNormalVector(photon.position);
-		// 	photon.direction -= n * n.dot(photon.direction) * 2;
+		else if (p <= specularReflectance)
+		{
+			// Specular 鏡面反射
+			Vector3 n = this->GetNormalVector(photon.position);
+			photon.direction -= n * n.dot(photon.direction) * 2;
 
-		// 	photon.spectrum = this->material.specular;
-		// 	photon.behavior = PhotonBehavior::SpecularReflection;
-		// }
+			photon.spectrum = this->material.specular;
+			photon.behavior = PhotonBehavior::SpecularReflection;
+		}
 		else
 		{	// 吸収
 			photon.incidence = photon.direction.reverse();

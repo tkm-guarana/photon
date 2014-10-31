@@ -118,21 +118,13 @@ public:
 	void Build();
 	void Build2();
 	void RunThread();
-	/* void Sort(Axis axis); */
 
-	uint32_t find_range(Vector3 coord, float distance, uint32_t heap_max);
 	uint32_t size();
 	Vector3 Radiance(const Vector3 &coord,
 					 float distance,
 					 uint32_t max_heap,
 					 const Vector3 &normal);
 };
-
-class PhotonCollector
-{
-		
-};
-
 
 
 #endif

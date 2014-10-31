@@ -12,10 +12,17 @@ private:
 	Vector3 look;
 	Vector3 up;
 
-public:
-	Camera() = default;
-	~Camera() = default;
+	float fov;
+	float znear;
+	float zfar;
 
+	Matrix4 view;
+	Matrix4 projection;
+
+public:
+	Camera(Vector3 _eye, Vector3 _look, Vector3 _up);
+	~Camera() = default;
+	
 };
 
 
